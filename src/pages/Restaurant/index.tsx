@@ -11,7 +11,7 @@ import { addItem } from '../../features/cart/cartSlice'
 import { colors } from '../../styles/theme'
 
 const Banner = styled.div<{ img: string }>`
-  height: 280px;
+  height: 240px;
   background-image: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url(${(p) => p.img});
   background-size: cover;
   background-position: center;
@@ -20,30 +20,32 @@ const Banner = styled.div<{ img: string }>`
 const BannerInner = styled.div`
   height: 100%;
   display: grid;
-  align-content: center;
+  align-content: space-between;
+  padding: 24px 0 32px;
   gap: 8px;
   color: ${colors.white};
 `
 
 const Cuisine = styled.span`
-  font-size: 32px;
+  font-size: 20px;
   font-weight: 100;
 `
 
 const Name = styled.h2`
   margin: 0;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 900;
 `
 
 const Grid = styled.div`
   margin-top: 56px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 320px);
   gap: 32px;
+  justify-content: center;
 
-  @media (max-width: 980px) { grid-template-columns: 1fr 1fr; }
-  @media (max-width: 640px) { grid-template-columns: 1fr; }
+  @media (max-width: 980px) { grid-template-columns: repeat(2, 320px); }
+  @media (max-width: 700px) { grid-template-columns: 1fr; }
 `
 
 const AddBtn = styled.button`
