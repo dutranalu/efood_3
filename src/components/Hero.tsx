@@ -21,7 +21,7 @@ const Wrap = styled.section`
 const Stack = styled.div`
   display: grid;
   justify-items: center;
-  gap: 24px;
+  gap: 16px;
   padding: 24px 16px;
 `
 

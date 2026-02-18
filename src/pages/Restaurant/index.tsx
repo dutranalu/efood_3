@@ -52,11 +52,13 @@ const AddBtn = styled.button`
   background: #FFEBD9;
   color: ${colors.salmon};
   border: 0;
-  padding: 6px 8px;
+  padding: 0 12px;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  width: fit-content;
+  width: 100%;
+  max-width: 218px;
+  height: 24px;
 `
 
 function formatBRL(v: number) {

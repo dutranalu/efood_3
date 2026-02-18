@@ -86,13 +86,13 @@ export default function Checkout() {
 
   const [step, setStep] = useState<Step>('delivery')
   const [form, setForm] = useState({
-    receiver: 'João Paulo de Souza',
+    receiver: '',
     address: '',
     city: '',
     zip: '',
     number: '',
     complement: '',
-    cardName: 'João Paulo de Souza',
+    cardName: '',
     cardNumber: '',
     cardCode: '',
     expMonth: '',
@@ -191,6 +191,9 @@ export default function Checkout() {
             <OutlineButton onClick={() => nav('/carrinho')}>
               Voltar para o carrinho
             </OutlineButton>
+            <OutlineButton onClick={() => nav('/')}>
+              Voltar para restaurantes
+            </OutlineButton>
           </>
         ) : (
           <>
@@ -230,6 +233,9 @@ export default function Checkout() {
             <OutlineButton onClick={() => setStep('delivery')}>
               Voltar para a edição de endereço
             </OutlineButton>
+            <OutlineButton onClick={() => nav('/')}>
+              Voltar para restaurantes
+            </OutlineButton>
           </>
         )}
       </Sidebar>
@@ -237,3 +243,5 @@ export default function Checkout() {
     </>
   )
 }
+
+

@@ -105,8 +105,13 @@ export default function Cart() {
                   <div style={{ display: 'grid', gap: 6 }}>
                     <strong style={{ fontSize: 18, lineHeight: '21px' }}>{i.nome}</strong>
                     <small style={{ color: colors.salmon, fontWeight: 700 }}>
-                      {formatBRL(i.preco)}
+                      {formatBRL(i.preco)} {i.qty > 1 && `x${i.qty}`}
                     </small>
+                    {i.qty > 1 && (
+                      <small style={{ color: colors.salmon, fontWeight: 700 }}>
+                        Total: {formatBRL(i.preco * i.qty)}
+                      </small>
+                    )}
                   </div>
                 </Item>
               ))}
@@ -120,6 +125,7 @@ export default function Cart() {
             <OutlineButton onClick={() => nav('/entrega')}>
               Continuar com a entrega
             </OutlineButton>
+            <Link to="/"><OutlineButton>Voltar para restaurantes</OutlineButton></Link>
           </>
         )}
       </Sidebar>
