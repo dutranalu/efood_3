@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Container } from '../../components/ui/Container'
 import { Button } from '../../components/ui/Button'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { removeItem } from '../../features/cart/cartSlice'
+import { addItem, decrementItem, removeItem } from '../../features/cart/cartSlice'
 import bin from '../../assets/lixeira-de-reciclagem 1.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { colors } from '../../styles/theme'
@@ -57,6 +57,25 @@ const Trash = styled.button`
   cursor: pointer;
 `
 
+const QtyRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${colors.salmon};
+  font-weight: 700;
+`
+
+const QtyBtn = styled.button`
+  width: 20px;
+  height: 20px;
+  border: 0;
+  background: ${colors.salmon};
+  color: ${colors.cream};
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+`
+
 const TotalRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -105,13 +124,16 @@ export default function Cart() {
                   <div style={{ display: 'grid', gap: 6 }}>
                     <strong style={{ fontSize: 18, lineHeight: '21px' }}>{i.nome}</strong>
                     <small style={{ color: colors.salmon, fontWeight: 700 }}>
-                      {formatBRL(i.preco)} {i.qty > 1 && `x${i.qty}`}
+                      {formatBRL(i.preco)}
                     </small>
-                    {i.qty > 1 && (
-                      <small style={{ color: colors.salmon, fontWeight: 700 }}>
-                        Total: {formatBRL(i.preco * i.qty)}
-                      </small>
-                    )}
+                    <QtyRow>
+                      <QtyBtn onClick={() => dispatch(decrementItem(i.id))} aria-label="Diminuir">-</QtyBtn>
+                      <span>x{i.qty}</span>
+                      <QtyBtn onClick={() => dispatch(addItem({ product: i, restaurantId: i.restaurantId }))} aria-label="Aumentar">+</QtyBtn>
+                    </QtyRow>
+                    <small style={{ color: colors.salmon, fontWeight: 700 }}>
+                      Total: {formatBRL(i.preco * i.qty)}
+                    </small>
                   </div>
                 </Item>
               ))}
