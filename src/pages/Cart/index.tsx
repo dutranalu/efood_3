@@ -50,8 +50,8 @@ const Img = styled.img`
 
 const Trash = styled.button`
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 12px;
+  right: 12px;
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -60,7 +60,7 @@ const Trash = styled.button`
 const QtyRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   color: ${colors.salmon};
   font-weight: 700;
 `
@@ -74,6 +74,7 @@ const QtyBtn = styled.button`
   font-weight: 700;
   cursor: pointer;
   line-height: 1;
+  border-radius: 2px;
 `
 
 const TotalRow = styled.div`
@@ -90,6 +91,12 @@ const OutlineButton = styled(Button)`
   background: #FFEBD9;
   color: ${colors.salmon};
   border-radius: 0;
+`
+
+const ButtonGroup = styled.div`
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
 `
 
 function formatBRL(value: number) {
@@ -144,10 +151,12 @@ export default function Cart() {
               <span>{formatBRL(total)}</span>
             </TotalRow>
 
-            <OutlineButton onClick={() => nav('/entrega')}>
-              Continuar com a entrega
-            </OutlineButton>
-            <Link to="/"><OutlineButton>Voltar para restaurantes</OutlineButton></Link>
+            <ButtonGroup>
+              <OutlineButton onClick={() => nav('/entrega')}>
+                Continuar com a entrega
+              </OutlineButton>
+              <Link to="/"><OutlineButton>Voltar para restaurantes</OutlineButton></Link>
+            </ButtonGroup>
           </>
         )}
       </Sidebar>

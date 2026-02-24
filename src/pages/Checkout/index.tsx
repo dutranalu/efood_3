@@ -59,16 +59,35 @@ const Row2 = styled.div`
   gap: 8px;
 `
 
+const Hint = styled.small`
+  color: ${colors.cream};
+  font-size: 11px;
+  opacity: 0.9;
+`
+
 const OutlineButton = styled(Button)`
   width: 100%;
   background: #FFEBD9;
   color: ${colors.salmon};
   border-radius: 0;
+`
+
+const ButtonGroup = styled.div`
+  display: grid;
+  gap: 8px;
   margin-top: 8px;
 `
 
 function onlyDigits(s: string) {
   return s.replace(/\D/g, '')
+}
+function isValidDate(month: string, year: string) {
+  const m = Number(month)
+  const y = Number(year)
+  if (!Number.isInteger(m) || !Number.isInteger(y)) return false
+  if (m < 1 || m > 12) return false
+  if (y < 0) return false
+  return true
 }
 function formatBRL(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -98,6 +117,21 @@ export default function Checkout() {
     expMonth: '',
     expYear: ''
   })
+
+  const isDeliveryValid =
+    form.receiver.trim() &&
+    form.address.trim() &&
+    form.city.trim() &&
+    form.zip.trim() &&
+    form.number.trim()
+
+  const isPaymentValid =
+    form.cardName.trim() &&
+    form.cardNumber.length >= 13 &&
+    form.cardCode.length >= 3 &&
+    form.expMonth.length === 2 &&
+    form.expYear.length === 2 &&
+    isValidDate(form.expMonth, form.expYear)
 
   if (items.length === 0) {
     return (
@@ -155,27 +189,50 @@ export default function Checkout() {
 
             <Field>
               Quem irá receber
-              <input value={form.receiver} onChange={(e) => setForm({ ...form, receiver: e.target.value })} />
+              <input
+                value={form.receiver}
+                onChange={(e) => setForm({ ...form, receiver: e.target.value })}
+                required
+              />
             </Field>
 
             <Field>
               Endereço
-              <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
+              <input
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                required
+              />
             </Field>
 
             <Field>
               Cidade
-              <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+              <input
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                required
+              />
             </Field>
 
             <Row2>
               <Field>
                 CEP
-                <input value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} />
+                <input
+                  value={form.zip}
+                  onChange={(e) => setForm({ ...form, zip: onlyDigits(e.target.value) })}
+                  inputMode="numeric"
+                  maxLength={8}
+                  required
+                />
               </Field>
               <Field>
                 Número
-                <input value={form.number} onChange={(e) => setForm({ ...form, number: e.target.value })} />
+                <input
+                  value={form.number}
+                  onChange={(e) => setForm({ ...form, number: onlyDigits(e.target.value) })}
+                  inputMode="numeric"
+                  required
+                />
               </Field>
             </Row2>
 
@@ -184,16 +241,21 @@ export default function Checkout() {
               <input value={form.complement} onChange={(e) => setForm({ ...form, complement: e.target.value })} />
             </Field>
 
-            <OutlineButton onClick={() => setStep('payment')}>
-              Continuar com o pagamento
-            </OutlineButton>
+            <ButtonGroup>
+              <OutlineButton onClick={() => setStep('payment')} disabled={!isDeliveryValid}>
+                Continuar com o pagamento
+              </OutlineButton>
+              {!isDeliveryValid && (
+                <Hint>Preencha todos os campos obrigatórios para avançar.</Hint>
+              )}
 
-            <OutlineButton onClick={() => nav('/carrinho')}>
-              Voltar para o carrinho
-            </OutlineButton>
-            <OutlineButton onClick={() => nav('/')}>
-              Voltar para restaurantes
-            </OutlineButton>
+              <OutlineButton onClick={() => nav('/carrinho')}>
+                Voltar para o carrinho
+              </OutlineButton>
+              <OutlineButton onClick={() => nav('/')}>
+                Voltar para restaurantes
+              </OutlineButton>
+            </ButtonGroup>
           </>
         ) : (
           <>
@@ -201,41 +263,76 @@ export default function Checkout() {
 
             <Field>
               Nome no cartão
-              <input value={form.cardName} onChange={(e) => setForm({ ...form, cardName: e.target.value })} />
+              <input
+                value={form.cardName}
+                onChange={(e) => setForm({ ...form, cardName: e.target.value })}
+                required
+              />
             </Field>
 
             <Row2>
               <Field>
                 Número do cartão
-                <input value={form.cardNumber} onChange={(e) => setForm({ ...form, cardNumber: e.target.value })} />
+                <input
+                  value={form.cardNumber}
+                  onChange={(e) => setForm({ ...form, cardNumber: onlyDigits(e.target.value) })}
+                  inputMode="numeric"
+                  maxLength={16}
+                  required
+                />
               </Field>
               <Field>
                 CVV
-                <input value={form.cardCode} onChange={(e) => setForm({ ...form, cardCode: e.target.value })} />
+                <input
+                  value={form.cardCode}
+                  onChange={(e) => setForm({ ...form, cardCode: onlyDigits(e.target.value) })}
+                  inputMode="numeric"
+                  maxLength={4}
+                  required
+                />
               </Field>
             </Row2>
 
             <Row2>
               <Field>
                 Mês de vencimento
-                <input value={form.expMonth} onChange={(e) => setForm({ ...form, expMonth: e.target.value })} />
+                <input
+                  value={form.expMonth}
+                  onChange={(e) => setForm({ ...form, expMonth: onlyDigits(e.target.value).slice(0, 2) })}
+                  inputMode="numeric"
+                  maxLength={2}
+                  placeholder="MM"
+                  required
+                />
               </Field>
               <Field>
                 Ano de vencimento
-                <input value={form.expYear} onChange={(e) => setForm({ ...form, expYear: e.target.value })} />
+                <input
+                  value={form.expYear}
+                  onChange={(e) => setForm({ ...form, expYear: onlyDigits(e.target.value).slice(0, 2) })}
+                  inputMode="numeric"
+                  maxLength={2}
+                  placeholder="AA"
+                  required
+                />
               </Field>
             </Row2>
 
-            <OutlineButton onClick={finalize} disabled={isLoading}>
-              {isLoading ? 'Finalizando...' : 'Finalizar pagamento'}
-            </OutlineButton>
+            <ButtonGroup>
+              <OutlineButton onClick={finalize} disabled={isLoading || !isPaymentValid}>
+                {isLoading ? 'Finalizando...' : 'Finalizar pagamento'}
+              </OutlineButton>
+              {!isPaymentValid && (
+                <Hint>Preencha corretamente os dados do cartão para finalizar.</Hint>
+              )}
 
-            <OutlineButton onClick={() => setStep('delivery')}>
-              Voltar para a edição de endereço
-            </OutlineButton>
-            <OutlineButton onClick={() => nav('/')}>
-              Voltar para restaurantes
-            </OutlineButton>
+              <OutlineButton onClick={() => setStep('delivery')}>
+                Voltar para a edição de endereço
+              </OutlineButton>
+              <OutlineButton onClick={() => nav('/')}>
+                Voltar para restaurantes
+              </OutlineButton>
+            </ButtonGroup>
           </>
         )}
       </Sidebar>
